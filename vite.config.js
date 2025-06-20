@@ -18,5 +18,13 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, './src/utils'),
       '@store': path.resolve(__dirname, './src/store'),
     }
+  },
+  server: {
+    port: 8080,
+    host: '0.0.0.0'
+  },
+  preview: {
+    port: 8080,
+    host: '0.0.0.0'
   }
 })
