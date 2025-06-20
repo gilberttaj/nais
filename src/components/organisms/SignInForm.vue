@@ -71,7 +71,6 @@ import GoogleSignInButton from '@/components/molecules/GoogleSignInButton.vue'
 import Divider from '@/components/molecules/Divider.vue'
 import LoadingSpinner from '@/components/atoms/LoadingSpinner.vue'
 import axios from 'axios'
-import { aws4Interceptor } from "aws4-axios";
 
 // Reactive state
 const email = ref('')
@@ -82,14 +81,7 @@ const emailError = ref('')
 const passwordError = ref('')
 const isGoogleLoading = ref(false)
 
-const interceptor = aws4Interceptor({
-  options: {
-    region: "ap-northeast-1",
-    service: "execute-api",
-  },
-});
 
-axios.interceptors.request.use(interceptor);
 
 onMounted(async () => {
   try {
