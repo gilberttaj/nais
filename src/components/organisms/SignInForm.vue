@@ -83,21 +83,21 @@ const isGoogleLoading = ref(false)
 
 
 
-onMounted(async () => {
-  try {
-    const response = await axios.get("https://sunixp5vn3.execute-api.ap-northeast-1.amazonaws.com/dev/api/test/endpoint");
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-})
+// onMounted(async () => {
+//   try {
+//     const response = await axios.get("https://sunixp5vn3.execute-api.ap-northeast-1.amazonaws.com/dev/api/test/endpoint");
+//     console.log(response.data);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// })
 
 // Methods
 const handleGoogleSignIn = async () => {
   try {
     isGoogleLoading.value = true;
     // const API_URL = import.meta.env.VITE_API_URL;
-    const apiUrl = "https://upm7m14wog.execute-api.ap-northeast-1.amazonaws.com/Prod";
+    const apiUrl = "https://an9s7h6cjd-vpce-03e2fb9671d9d8aed.execute-api.ap-northeast-1.amazonaws.com/Prod";
     const response = await axios.get(`${apiUrl}/auth/google`);
     
     if (response.data && response.data.redirectUrl) {
