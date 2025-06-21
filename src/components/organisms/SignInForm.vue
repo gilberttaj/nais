@@ -96,20 +96,18 @@ const isGoogleLoading = ref(false)
 const handleGoogleSignIn = async () => {
   try {
     isGoogleLoading.value = true;
-    // const API_URL = import.meta.env.VITE_API_URL;
     const apiUrl = "https://an9s7h6cjd.execute-api.ap-northeast-1.amazonaws.com/dev";
-    const response = await axios.get(`${apiUrl}/auth/google`);
     
-    if (response.data && response.data.redirectUrl) {
-      // Redirect the browser to Google login
-      window.location.href = response.data.redirectUrl;
-    }
+    // Direct redirect to proxy endpoint for private network support
+    window.location.href = `${apiUrl}/auth/google/proxy`;
+    
   } catch (error) {
     console.error('Error initiating Google login:', error);
     isGoogleLoading.value = false;
   }
   // Note: We don't set isGoogleLoading to false on success because we're redirecting
-}
+};
+
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value
