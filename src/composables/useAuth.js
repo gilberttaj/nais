@@ -1,7 +1,7 @@
 import { ref, reactive, computed } from 'vue'
 
 const API_BASE_URL = import.meta.env.VITE_PRIVATE_API_URL || 'https://d0kbc4lmzg-vpce-03e2fb9671d9d8aed.execute-api.ap-northeast-1.amazonaws.com/dev'
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '253508748236-v8b0mno2cbav0l0ljparetkdj81fhem9.apps.googleusercontent.com'
 
 
 // Validate required environment variables
