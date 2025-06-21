@@ -96,7 +96,7 @@ const isGoogleLoading = ref(false)
 const handleGoogleSignIn = async () => {
   try {
     isGoogleLoading.value = true;
-    const apiUrl = "https://an9s7h6cjd.execute-api.ap-northeast-1.amazonaws.com/dev";
+    const apiUrl = "https://poipy8j75l.execute-api.ap-northeast-1.amazonaws.com/dev";
     
     // Direct redirect to proxy endpoint for private network support
     window.location.href = `${apiUrl}/auth/google/proxy`;
