@@ -71,6 +71,8 @@ import GoogleSignInButton from '@/components/molecules/GoogleSignInButton.vue'
 import Divider from '@/components/molecules/Divider.vue'
 import LoadingSpinner from '@/components/atoms/LoadingSpinner.vue'
 import axios from 'axios'
+import { useAuth } from '../../composables/useAuth'
+import { useRouter } from 'vue-router'
 
 // Reactive state
 const email = ref('')
@@ -80,6 +82,17 @@ const showPassword = ref(false)
 const emailError = ref('')
 const passwordError = ref('')
 const isGoogleLoading = ref(false)
+
+const { loginWithGoogle, isLoading, error, isAuthenticated, getConfig } = useAuth()
+const router = useRouter()
+
+const showDebug = ref(false)
+const config = getConfig()
+
+// Redirect if already authenticated
+if (isAuthenticated) {
+  router.push('/')
+}
 
 
 
@@ -95,17 +108,13 @@ const isGoogleLoading = ref(false)
 // Methods
 const handleGoogleSignIn = async () => {
   try {
-    isGoogleLoading.value = true;
-    const apiUrl = "https://poipy8j75l.execute-api.ap-northeast-1.amazonaws.com/dev";
-    
-    // Direct redirect to proxy endpoint for private network support
-    window.location.href = `${apiUrl}/auth/google/proxy`;
-    
+    isGoogleLoading.value = true
+    await loginWithGoogle()
   } catch (error) {
-    console.error('Error initiating Google login:', error);
-    isGoogleLoading.value = false;
+    console.error('Login failed:', error)
+  } finally {
+    isGoogleLoading.value = false
   }
-  // Note: We don't set isGoogleLoading to false on success because we're redirecting
 };
 
 

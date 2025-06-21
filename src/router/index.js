@@ -5,6 +5,7 @@ import HomePage from '../pages/HomePage.vue'
 import SignInPage from '../pages/SignInPage.vue'
 import SignUpPage from '../pages/SignUpPage.vue'
 import NotFoundPage from '../pages/NotFoundPage.vue'
+import { useAuth } from '../composables/useAuth'
 
 const routes = [
   {
@@ -24,8 +25,8 @@ const routes = [
     component: SignUpPage
   },
   {
-    path: '/auth/validation',
-    name: 'AuthValidation',
+    path: '/auth/google/callback',
+    name: 'AuthCallback',
     component: AuthValidation,
   },
   {
@@ -46,6 +47,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const accessToken = ls.get('access_token')
+  const { isAuthenticated } = useAuth()
   
   console.log('Navigation to:', to.name, 'Has token:', accessToken !== null)
   
