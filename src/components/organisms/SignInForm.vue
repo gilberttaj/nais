@@ -6,7 +6,7 @@
       </template>
     </GoogleSignInButton>
     
-    <Divider />
+    <!-- <Divider />
     
     <form @submit.prevent="handleSubmit">
       <InputField
@@ -58,7 +58,7 @@
           Sign Up
         </router-link>
       </p>
-    </form>
+    </form> -->
   </div>
 </template>
 
