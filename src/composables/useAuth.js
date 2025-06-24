@@ -51,44 +51,62 @@ export function useAuth() {
 
  // Start Google SSO flow
  const loginWithGoogle = async () => {
+    // try {
+    //   authState.isLoading = true
+    //   authState.error = null
+
+    //   // Validate Google Client ID is available
+    //   if (!GOOGLE_CLIENT_ID) {
+    //     throw new Error('Google Client ID not configured. Please check VUE_APP_GOOGLE_CLIENT_ID environment variable.')
+    //   }
+
+    //   const response = await fetch(`${API_BASE_URL}/auth/google/login`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       clientId: GOOGLE_CLIENT_ID // Send for validation
+    //     })
+    //   })
+
+    //   if (!response.ok) {
+    //     throw new Error(`HTTP error! status: ${response.status}`)
+    //   }
+
+    //   const data = await response.json()
+      
+    //   // Validate the authUrl contains our client ID (security check)
+    //   if (!data.authUrl || !data.authUrl.includes(GOOGLE_CLIENT_ID)) {
+    //     throw new Error('Invalid Google OAuth URL received from server')
+    //   }
+      
+    //   // Redirect to Google OAuth
+    //   window.location.href = data.authUrl
+      
+    // } catch (error) {
+    //   authState.error = error.message
+    //   console.error('Login error:', error)
+    // } finally {
+    //   authState.isLoading = false
+    // }
+
     try {
       authState.isLoading = true
       authState.error = null
-
+  
       // Validate Google Client ID is available
       if (!GOOGLE_CLIENT_ID) {
         throw new Error('Google Client ID not configured. Please check VUE_APP_GOOGLE_CLIENT_ID environment variable.')
       }
-
-      const response = await fetch(`${API_BASE_URL}/auth/google/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          clientId: GOOGLE_CLIENT_ID // Send for validation
-        })
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      
-      // Validate the authUrl contains our client ID (security check)
-      if (!data.authUrl || !data.authUrl.includes(GOOGLE_CLIENT_ID)) {
-        throw new Error('Invalid Google OAuth URL received from server')
-      }
-      
-      // Redirect to Google OAuth
-      window.location.href = data.authUrl
+  
+      // Direct navigation to the login URL
+      window.location.href = `${API_BASE_URL}/auth/google/login`
       
     } catch (error) {
       authState.error = error.message
       console.error('Login error:', error)
-    } finally {
-      authState.isLoading = false
+      authState.isLoading = false // Only set to false on error since we're navigating away
     }
   }
 
