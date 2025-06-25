@@ -25,7 +25,7 @@ const routes = [
     component: SignUpPage
   },
   {
-    path: '/auth/google/callback',
+    path: '/auth/validation',
     name: 'AuthCallback',
     component: AuthValidation,
   },

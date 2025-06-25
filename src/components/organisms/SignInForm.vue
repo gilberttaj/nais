@@ -6,9 +6,9 @@
       </template>
     </GoogleSignInButton>
     
-    <!-- <Divider />
+    <!-- <Divider /> -->
     
-    <form @submit.prevent="handleSubmit">
+    <!-- <form @submit.prevent="handleSubmit">
       <InputField
         id="email"
         label="Email"
@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import InputField from '@/components/atoms/InputField.vue'
 import Button from '@/components/atoms/Button.vue'
 import Checkbox from '@/components/atoms/Checkbox.vue'
@@ -71,9 +71,10 @@ import GoogleSignInButton from '@/components/molecules/GoogleSignInButton.vue'
 import Divider from '@/components/molecules/Divider.vue'
 import LoadingSpinner from '@/components/atoms/LoadingSpinner.vue'
 import axios from 'axios'
-import { useAuth } from '../../composables/useAuth'
+import ls from '@/utils/secureLS'
 import { useRouter } from 'vue-router'
 
+const router = useRouter()
 // Reactive state
 const email = ref('')
 const password = ref('')
@@ -83,40 +84,25 @@ const emailError = ref('')
 const passwordError = ref('')
 const isGoogleLoading = ref(false)
 
-const { loginWithGoogle, isLoading, error, isAuthenticated, getConfig } = useAuth()
-const router = useRouter()
-
-const showDebug = ref(false)
-const config = getConfig()
-
-// Redirect if already authenticated
-if (isAuthenticated) {
-  router.push('/')
-}
-
-
-
-// onMounted(async () => {
-//   try {
-//     const response = await axios.get("https://sunixp5vn3.execute-api.ap-northeast-1.amazonaws.com/dev/api/test/endpoint");
-//     console.log(response.data);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// })
-
 // Methods
 const handleGoogleSignIn = async () => {
+  // ls.set('access_token', '1234567890')
+  // router.push('/')
   try {
-    isGoogleLoading.value = true
-    await loginWithGoogle()
+    isGoogleLoading.value = true;
+    const API_URL = import.meta.env.VITE_API_URL || 'https://91xl0mky4e-vpce-03e2fb9671d9d8aed.execute-api.ap-northeast-1.amazonaws.com/dev';
+    const response = await axios.get(`${API_URL}/auth/google/login`);
+    
+    if (response.data && response.data.redirectUrl) {
+      // Redirect the browser to Google login
+      window.location.href = response.data.redirectUrl;
+    }
   } catch (error) {
-    console.error('Login failed:', error)
-  } finally {
-    isGoogleLoading.value = false
+    console.error('Error initiating Google login:', error);
+    isGoogleLoading.value = false;
   }
-};
-
+  // Note: We don't set isGoogleLoading to false on success because we're redirecting
+}
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value

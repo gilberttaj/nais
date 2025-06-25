@@ -1,7 +1,7 @@
 <!-- src/views/AuthValidation.vue -->
 <template>
   <div class="auth-validation">
-    <div v-if="isLoading" class="loading-container">
+    <div v-if="loading" class="loading-container">
       <div class="spinner-container">
         <LoadingSpinner :size="35" />
         <div class="authenticating-text">Authenticating...</div>
@@ -9,7 +9,7 @@
     </div>
     <div v-else-if="error" class="error-container">
       <h2>Authentication Error</h2>
-      <p>{{ error }}</p>
+      <p>{{ errorMessage }}</p>
       <button @click="goToLogin">Return to Login</button>
     </div>
   </div>
@@ -17,19 +17,42 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import LoadingSpinner from '@/components/atoms/LoadingSpinner.vue'
 import ls from '@/utils/secureLS'
-import { useAuth } from '../../composables/useAuth'
 
-const route = useRoute()
+
 const router = useRouter()
-const { handleGoogleCallback, isLoading, error } = useAuth()
+const loading = ref(true)
+const error = ref(false)
+const errorMessage = ref('')
 
+// Function to parse URL query parameters
+const getQueryParams = () => {
+  const params = new URLSearchParams(window.location.search)
+  const result = {}
+  for (const [key, value] of params.entries()) {
+    result[key] = value
+  }
+  return result
+}
 
+// Function to store auth tokens in localStorage
+const storeAuthTokens = (tokens) => {
+  ls.set('id_token', tokens.id_token)
+  ls.set('access_token', tokens.access_token)
 
+  if (tokens.refresh_token) {
+    ls.set('refresh_token', tokens.refresh_token)
+  }
 
+  ls.set('token_type', tokens.token_type)
 
+  // Store expiration time as timestamp
+  const expiresIn = parseInt(tokens.expires_in)
+  const expirationTime = Date.now() + expiresIn * 1000
+  ls.set('token_expiration', expirationTime.toString())
+}
 
 // Function to navigate to login page
 const goToLogin = () => {
@@ -41,26 +64,41 @@ const goToLogin = () => {
   router.push('/signin')
 }
 
-onMounted(async () => {
+onMounted(() => {
   try {
-    const code = route.query.code
-    
-    if (!code) {
-      throw new Error('No authorization code received')
+    const params = getQueryParams()
+
+    if (params.status === 'error') {
+      error.value = true
+      errorMessage.value = params.message || 'Authentication failed'
+      loading.value = false
+      return
     }
-    
-    await handleGoogleCallback(code)
-    
-    // Redirect to dashboard after successful authentication
-    setTimeout(() => {
+
+    if (params.status === 'success' && params.access_token) {
+      // Store tokens in localStorage
+      storeAuthTokens({
+        id_token: params.id_token,
+        access_token: params.access_token,
+        refresh_token: params.refresh_token,
+        expires_in: params.expires_in,
+        token_type: params.token_type
+      })
+
+      // Redirect to home page after successful authentication
       router.push('/')
-    }, 1500)
-    
+    } else {
+      error.value = true
+      errorMessage.value = 'Invalid authentication response'
+      loading.value = false
+    }
   } catch (err) {
-    console.error('Authentication callback error:', err)
+    console.error('Authentication validation error:', err)
+    error.value = true
+    errorMessage.value = 'Failed to process authentication response'
+    loading.value = false
   }
 })
-
 </script>
 
 <style scoped lang="postcss">
